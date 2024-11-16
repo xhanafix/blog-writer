@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Article Generator</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1>AI Article Generator</h1>
+        
+        <div class="input-section">
+            <input type="text" id="apiKey" placeholder="Enter OpenRouter API Key" />
+            <input type="text" id="topic" placeholder="Enter article topic" />
+            <input type="text" id="targetUrl" placeholder="Enter target URL to outrank" />
+            <input type="text" id="websiteUrl" placeholder="Enter your website URL" />
+            <div class="language-options">
+                <label>Input Language:</label>
+                <select id="inputLanguage">
+                    <option value="en">English</option>
+                    <option value="ms">Bahasa Malaysia</option>
+                </select>
+                
+                <label>Output Language:</label>
+                <select id="outputLanguage">
+                    <option value="en">English</option>
+                    <option value="ms">Bahasa Malaysia</option>
+                </select>
+            </div>
+            <button onclick="generateArticle()">Generate Article</button>
+        </div>
+
+        <div class="output-section">
+            <div id="loading" class="hidden">
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill"></div>
+                    </div>
+                    <div class="progress-text">Generating article... <span id="progress-percentage">0%</span></div>
+                </div>
+            </div>
+            <div class="result-container">
+                <div class="result-stats">
+                    <span id="wordCount">Words: 0</span>
+                </div>
+                <div id="result" class="markdown-content"></div>
+                <button id="copyButton" class="copy-button" onclick="copyContent()">
+                    <i class="fas fa-copy"></i> Copy
+                </button>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <p>&copy; 2024 xhanafix. All rights reserved.</p>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html> 

@@ -1,0 +1,227 @@
+:root {
+    --bg-primary: #1a1a1a;
+    --bg-secondary: #2d2d2d;
+    --text-primary: #ffffff;
+    --text-secondary: #b3b3b3;
+    --accent-color: #007bff;
+    --accent-hover: #0056b3;
+    --border-color: #404040;
+    --input-bg: #333333;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    padding: 20px;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: var(--bg-secondary);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    flex: 1;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: var(--text-primary);
+}
+
+.input-section {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+input, select, button {
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 16px;
+    background-color: var(--input-bg);
+    color: var(--text-primary);
+}
+
+button {
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: var(--accent-hover);
+}
+
+.result-container {
+    position: relative;
+    margin-top: 20px;
+}
+
+.copy-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 8px 16px;
+    background-color: var(--accent-color);
+    border-radius: 4px;
+    opacity: 0.8;
+    transition: opacity 0.3s;
+}
+
+.copy-button:hover {
+    opacity: 1;
+}
+
+.copy-button i {
+    margin-right: 5px;
+}
+
+.markdown-content {
+    padding: 20px;
+    background-color: var(--bg-secondary);
+    border-radius: 0 0 4px 4px;
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+}
+
+/* Markdown Content Styles */
+.markdown-content h1, 
+.markdown-content h2, 
+.markdown-content h3, 
+.markdown-content h4 {
+    color: var(--text-primary);
+    margin-bottom: 0.5em;
+}
+
+.markdown-content h1 { font-size: 2em; }
+.markdown-content h2 { font-size: 1.5em; }
+.markdown-content h3 { font-size: 1.3em; }
+.markdown-content h4 { font-size: 1.1em; }
+.markdown-content p { margin-bottom: 1em; }
+.markdown-content ul, 
+.markdown-content ol { 
+    margin-bottom: 1em; 
+    padding-left: 2em; 
+}
+
+/* Progress Bar Styles */
+.progress-container {
+    width: 100%;
+    padding: 20px;
+    text-align: center;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 20px;
+    background-color: var(--input-bg);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.progress-fill {
+    width: 0%;
+    height: 100%;
+    background-color: var(--accent-color);
+    transition: width 0.5s ease-in-out;
+    border-radius: 10px;
+}
+
+.progress-text {
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+/* Footer Styles */
+footer {
+    text-align: center;
+    padding: 20px;
+    margin-top: 20px;
+    color: var(--text-secondary);
+    background-color: var(--bg-secondary);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+
+    .container {
+        padding: 15px;
+    }
+
+    .language-options {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .language-options label {
+        min-width: auto;
+    }
+
+    .copy-button {
+        position: static;
+        width: 100%;
+        margin-top: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 1.5em;
+    }
+
+    input, select, button {
+        padding: 10px;
+        font-size: 14px;
+    }
+}
+
+/* Animation */
+.progress-fill.animate {
+    animation: progress-animation 60s linear;
+}
+
+@keyframes progress-animation {
+    0% { width: 0%; }
+    90% { width: 90%; }
+    100% { width: 90%; }
+}
+
+/* Add these styles to your existing CSS */
+.result-stats {
+    background-color: var(--bg-secondary);
+    padding: 10px;
+    border-radius: 4px 4px 0 0;
+    border: 1px solid var(--border-color);
+    border-bottom: none;
+    color: var(--text-secondary);
+    font-size: 14px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.result-stats span {
+    margin-left: 15px;
+}
+  
