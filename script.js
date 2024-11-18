@@ -91,11 +91,39 @@ async function generateArticle() {
         });
 
         if (!keywordResponse.ok) {
-            throw new Error('Failed to generate focus keywords');
+            const errorText = await keywordResponse.text();
+            let errorMessage;
+            try {
+                const errorData = JSON.parse(errorText);
+                errorMessage = errorData.error?.message || 'Unknown API error';
+            } catch {
+                errorMessage = errorText || 'Unknown API error';
+            }
+            throw new Error(`Keyword API error: ${errorMessage}`);
         }
 
         const keywordData = await keywordResponse.json();
+        
+        // More detailed error checking for the keyword response
+        if (!keywordData) {
+            throw new Error('Empty response from keyword API');
+        }
+        if (!Array.isArray(keywordData.choices)) {
+            console.error('Invalid keyword response structure:', keywordData);
+            throw new Error('Invalid keyword API response structure');
+        }
+        if (keywordData.choices.length === 0) {
+            throw new Error('No choices returned from keyword API');
+        }
+        if (!keywordData.choices[0]?.message?.content) {
+            console.error('Invalid choice structure:', keywordData.choices[0]);
+            throw new Error('Invalid keyword choice structure');
+        }
+
         const focusKeywords = keywordData.choices[0].message.content.trim();
+        if (!focusKeywords) {
+            throw new Error('Empty keywords returned from API');
+        }
 
         // Main article generation prompt with focus keywords
         const articlePrompt = `Please ignore all previous instructions. Following the guidelines provided by https://rankmath.com/kb/score-100-in-tests/. 
@@ -148,49 +176,64 @@ async function generateArticle() {
         });
 
         if (!articleResponse.ok) {
-            const errorData = await articleResponse.json();
-            throw new Error(`HTTP error! status: ${articleResponse.status} - ${errorData.error?.message || 'Unknown error'}`);
+            const errorText = await articleResponse.text();
+            let errorMessage;
+            try {
+                const errorData = JSON.parse(errorText);
+                errorMessage = errorData.error?.message || 'Unknown API error';
+            } catch {
+                errorMessage = errorText || 'Unknown API error';
+            }
+            throw new Error(`Article API error: ${errorMessage}`);
         }
 
         const articleData = await articleResponse.json();
         
-        if (articleData.choices && articleData.choices[0] && articleData.choices[0].message) {
-            // Complete the progress bar
-            progress = 100;
-            progressPercentage.textContent = '100%';
-            progressFill.style.width = '100%';
-            
-            const articleContent = articleData.choices[0].message.content;
-            
-            // Configure marked to interpret the content correctly
-            marked.setOptions({
-                breaks: true,
-                gfm: true
-            });
-            
-            // Render the markdown content
-            result.innerHTML = marked.parse(articleContent);
-            
-            // Update word count
-            const wordCount = countWords(result.innerText);
-            document.getElementById('wordCount').textContent = `Words: ${wordCount}`;
-            
-            // Add color indication based on word count
-            const wordCountElement = document.getElementById('wordCount');
-            if (wordCount < 1800) {
-                wordCountElement.style.color = '#ff4444'; // Red for too few words
-            } else if (wordCount > 2200) {
-                wordCountElement.style.color = '#ffbb33'; // Orange for too many words
-            } else {
-                wordCountElement.style.color = '#00C851'; // Green for just right
-            }
-        } else {
-            throw new Error('Unexpected API response structure');
+        // Add thorough error checking for article response
+        if (!articleData?.choices?.[0]?.message?.content) {
+            console.error('Invalid API response:', articleData);
+            throw new Error('Invalid article response format from API');
         }
+
+        // Complete the progress bar
+        progress = 100;
+        progressPercentage.textContent = '100%';
+        progressFill.style.width = '100%';
+        
+        const articleContent = articleData.choices[0].message.content;
+        
+        // Configure marked to interpret the content correctly
+        marked.setOptions({
+            breaks: true,
+            gfm: true
+        });
+        
+        // Render the markdown content
+        result.innerHTML = marked.parse(articleContent);
+        
+        // Update word count
+        const wordCount = countWords(result.innerText);
+        document.getElementById('wordCount').textContent = `Words: ${wordCount}`;
+        
+        // Update word count color
+        const wordCountElement = document.getElementById('wordCount');
+        if (wordCount < 1800) {
+            wordCountElement.style.color = '#ff4444';
+        } else if (wordCount > 2200) {
+            wordCountElement.style.color = '#ffbb33';
+        } else {
+            wordCountElement.style.color = '#00C851';
+        }
+
     } catch (error) {
-        console.error('Error:', error);
-        result.innerHTML = `<p class="error">Error generating article: ${error.message}</p>`;
+        console.error('Error details:', error);
+        result.innerHTML = `<p class="error">Error: ${error.message}</p>`;
         document.getElementById('wordCount').textContent = 'Words: 0';
+        
+        // Reset progress bar on error
+        progress = 0;
+        progressPercentage.textContent = '0%';
+        progressFill.style.width = '0%';
     } finally {
         clearInterval(progressInterval);
         setTimeout(() => {
