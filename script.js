@@ -111,11 +111,12 @@ async function generateArticle() {
         - Use H2 tags for main sections
         - Use H3 tags for subsections
         - Use H4 tags for detailed points where needed
-        - Format headings exactly like this:
-          # Main Title (H1)
-          ## Section Title (H2)
-          ### Subsection Title (H3)
-          #### Detailed Point (H4)
+        - Format headings using plain text with markdown syntax:
+          # Main Title
+          ## Section Title
+          ### Subsection Title
+          #### Detailed Point
+        - Do not include any special characters or formatting within headings
         
         Other requirements:
         - Include the focus keywords naturally throughout the content
@@ -183,8 +184,12 @@ async function generateArticle() {
             // Custom renderer to add classes to headings
             const renderer = new marked.Renderer();
             renderer.heading = function(text, level) {
+                // Clean the text by removing any potential object notation
+                const cleanText = typeof text === 'object' ? text.toString() : text;
+                // Remove any markdown syntax that might remain
+                const plainText = cleanText.replace(/[#*_{}[\]()]/g, '').trim();
                 const headingClass = `heading-${level}`;
-                return `<h${level} class="${headingClass}">${text}</h${level}>`;
+                return `<h${level} class="${headingClass}">${plainText}</h${level}>`;
             };
 
             marked.use({ renderer });
