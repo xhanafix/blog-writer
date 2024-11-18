@@ -104,21 +104,9 @@ async function generateArticle() {
         Use these focus keywords throughout the article: ${focusKeywords}
         
         Write a 2000-word 100% Unique, SEO-optimized, Human-Written article in ${outputLanguage === 'en' ? 'English' : 'Bahasa Malaysia'} 
-        that covers the topic "${topic}".
+        with at least 15 headings and subheadings (including H1, H2, H3, and H4 headings) that covers the topic "${topic}".
         
-        Requirements for headings:
-        - Use exactly one H1 tag for the main title
-        - Use H2 tags for main sections
-        - Use H3 tags for subsections
-        - Use H4 tags for detailed points where needed
-        - Format headings using plain text with markdown syntax:
-          # Main Title
-          ## Section Title
-          ### Subsection Title
-          #### Detailed Point
-        - Do not include any special characters or formatting within headings
-        
-        Other requirements:
+        Requirements:
         - Include the focus keywords naturally throughout the content
         - Use bullet points or numbered lists where appropriate
         - Write in your own words without copying from other sources
@@ -126,6 +114,7 @@ async function generateArticle() {
         - Use formal "we" language with rich, detailed paragraphs
         - Write in a conversational style
         - End with a conclusion paragraph and 5 unique FAQs
+        - Bold all titles and headings
         - Start with {start} tags and end with {finish} tags
         
         The article should be formatted in markdown and optimized to outrank "${targetUrl}" in Google.
@@ -173,26 +162,11 @@ async function generateArticle() {
             
             const articleContent = articleData.choices[0].message.content;
             
-            // Configure marked with custom heading rendering
+            // Configure marked to interpret the content correctly
             marked.setOptions({
                 breaks: true,
-                gfm: true,
-                headerIds: true,
-                renderer: new marked.Renderer()
+                gfm: true
             });
-
-            // Custom renderer to add classes to headings
-            const renderer = new marked.Renderer();
-            renderer.heading = function(text, level) {
-                // Clean the text by removing any potential object notation
-                const cleanText = typeof text === 'object' ? text.toString() : text;
-                // Remove any markdown syntax that might remain
-                const plainText = cleanText.replace(/[#*_{}[\]()]/g, '').trim();
-                const headingClass = `heading-${level}`;
-                return `<h${level} class="${headingClass}">${plainText}</h${level}>`;
-            };
-
-            marked.use({ renderer });
             
             // Render the markdown content
             result.innerHTML = marked.parse(articleContent);
@@ -204,11 +178,11 @@ async function generateArticle() {
             // Add color indication based on word count
             const wordCountElement = document.getElementById('wordCount');
             if (wordCount < 1800) {
-                wordCountElement.style.color = '#ff4444';
+                wordCountElement.style.color = '#ff4444'; // Red for too few words
             } else if (wordCount > 2200) {
-                wordCountElement.style.color = '#ffbb33';
+                wordCountElement.style.color = '#ffbb33'; // Orange for too many words
             } else {
-                wordCountElement.style.color = '#00C851';
+                wordCountElement.style.color = '#00C851'; // Green for just right
             }
         } else {
             throw new Error('Unexpected API response structure');
